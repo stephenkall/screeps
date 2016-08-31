@@ -19,7 +19,9 @@ var roleRepairer = {
                                 structure.structureType == STRUCTURE_SPAWN ||
                                 structure.structureType == STRUCTURE_TOWER ||
                                 structure.structureType == STRUCTURE_STORAGE ||
-                                structure.structureType == STRUCTURE_CONTAINER) && 
+                                structure.structureType == STRUCTURE_CONTAINER ||
+                                structure.structureType == STRUCTURE_WALL ||
+                                structure.structureType == STRUCTURE_RAMPART) && 
                                (structure.hits < structure.hitsMax * 0.9);
                     }
             });
