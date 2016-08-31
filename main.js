@@ -7,7 +7,7 @@ module.exports.loop = function () {
     
     var maxHarvesters = 1;
     var maxUpgraders = 1;
-    var maxBuilders = 5;
+    var maxBuilders = 3;
     var maxRepairers = 1;
 
     /*var tower = Game.getObjectById('88fa06c1f96d6e43c2eaef78');
