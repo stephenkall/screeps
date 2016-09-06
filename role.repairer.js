@@ -21,7 +21,8 @@ var roleRepairer = {
                                 structure.structureType == STRUCTURE_STORAGE ||
                                 structure.structureType == STRUCTURE_CONTAINER ||
                                 structure.structureType == STRUCTURE_WALL ||
-                                structure.structureType == STRUCTURE_RAMPART) && 
+                                structure.structureType == STRUCTURE_RAMPART ||
+                                structure.structureType == STRUCTURE_ROAD) && 
                                (structure.hits < structure.hitsMax * 0.9);
                     }
             });
