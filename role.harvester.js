@@ -9,6 +9,7 @@ var roleHarvester = {
             }
         }
         else {
+            
             var targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return (structure.structureType == STRUCTURE_EXTENSION ||
@@ -18,6 +19,17 @@ var roleHarvester = {
                                 structure.structureType == STRUCTURE_CONTAINER) && structure.energy < structure.energyCapacity;
                     }
             });
+            
+            if(targets == null)
+            {
+                targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return structure.structureType == STRUCTURE_CONTAINER &&
+                        _.sum(structure.store) < structure.storeCapacity;
+                        }
+                        });
+            }
+            
             if(targets != null) {
                 if(creep.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets);
