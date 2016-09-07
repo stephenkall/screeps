@@ -24,18 +24,18 @@ module.exports.loop = function ()
             
         case 2:
             maxHarvesters = 2;
-            maxUpgraders = 2;
+            maxUpgraders = 3;
             maxBuilders = 2;
-            maxRepairers = 2;            
-            bodyParts = [WORK,CARRY,MOVE];
+            maxRepairers = 5;            
+            bodyParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
             break;
             
         case 3:
             maxHarvesters = 3;
-            maxUpgraders = 3;
+            maxUpgraders = 4;
             maxBuilders = 2;
             maxRepairers = 10;
-            bodyParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+            bodyParts = [WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE];
             break;
             
         default:
