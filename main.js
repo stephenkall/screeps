@@ -27,11 +27,11 @@ module.exports.loop = function ()
             maxUpgraders = 3;
             maxBuilders = 2;
             maxRepairers = 5;            
-            bodyParts = [WORK,WORK,CARRY,CARRY,MOVE,MOVE];
+            bodyParts = [WORK,CARRY,CARRY,MOVE];
             break;
             
         case 3:
-            maxHarvesters = 3;
+            maxHarvesters = 5;
             maxUpgraders = 4;
             maxBuilders = 2;
             maxRepairers = 10;
@@ -111,11 +111,16 @@ module.exports.loop = function ()
         }
     }
     else
-    if(builders.length < maxBuilders) {
-        var newName = Game.spawns['Spawn1'].createCreep(bodyParts, undefined, {role: 'builder', lvl: curLevel});
-        if (newName.length > 2)
+    if(builders.length < maxBuilders)
+    {
+        var buildingTargets = Game.spawns['Spawn1'].pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+        if (buildingTargets != null)
         {
-            console.log('Spawning new builder: ' + newName + ', level: ' + curLevel);
+            var newName = Game.spawns['Spawn1'].createCreep(bodyParts, undefined, {role: 'builder', lvl: curLevel});
+            if (newName.length > 2)
+            {
+                console.log('Spawning new builder: ' + newName + ', level: ' + curLevel);
+            }
         }
     }
     else
