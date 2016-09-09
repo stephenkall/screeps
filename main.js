@@ -33,7 +33,7 @@ module.exports.loop = function ()
         case 3:
             maxHarvesters = 5;
             maxUpgraders = 4;
-            maxBuilders = 2;
+            maxBuilders = 5;
             maxRepairers = 10;
             bodyParts = [WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE];
             break;
@@ -41,35 +41,41 @@ module.exports.loop = function ()
         default:
             maxHarvesters = 5;
             maxUpgraders = 5;
-            maxBuilders = 5;
+            maxBuilders = 10;
             maxRepairers = 10;
             bodyParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
             break;
     }
 
-    /*var tower = Game.getObjectById('88fa06c1f96d6e43c2eaef78');
-    if(tower) {
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-        if(closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
-        }
 
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
-    }*/
 
     var hostiles = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS);
     
     if(hostiles.length > 0) {
         var username = hostiles[0].owner.username;
         //Game.notify('User ${username} spotted in room ${roomName}');
-        Game.notify('User ${username} spotted in room');
+        Game.notify('User "' + username + '" spotted in room');
         var towers = Game.spawns.Spawn1.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
         towers.forEach(tower => tower.attack(hostiles[0]));
+    }
+    else
+    {
+        //var tower = Game.getObjectById('88fa06c1f96d6e43c2eaef78');
+        var towers = Game.spawns.Spawn1.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
+        if (towers != null)
+        {
+            towers.forEach((tower) =>
+            {
+                if(tower)
+                {
+                    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, { filter: (structure) => structure.hits < structure.hitsMax });
+                    if(closestDamagedStructure)
+                    {
+                        tower.repair(closestDamagedStructure);
+                    }
+                }
+            });
+        }
     }
 
     for(var name in Memory.creeps) {
