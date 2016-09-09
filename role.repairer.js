@@ -27,15 +27,17 @@ var roleRepairer = {
                     }
             });
             var targets;
+            
             if (lowTargets != null)
             {
+                if (creep.memory.target == null)
+                {
+                    lowTargets.sort(compareStructures);
+                    creep.memory.target = (lowTargets[0].id);
+                }
                 
-                lowTargets.sort(compareStructures);
-                
-                targets = lowTargets[0];
-                
-                if(creep.repair(targets) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets);
+                if(creep.repair(Game.getObjectById(creep.memory.target)) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(Game.getObjectById(creep.memory.target));
                 }                
             }
             else
@@ -53,6 +55,7 @@ var roleRepairer = {
             }
 	    }
 	    else {
+	        creep.memory.target = null;
 	        var sources = creep.pos.findClosestByPath(FIND_SOURCES, { filter: (structure) => { return structure.energy > 0; } });
             if(creep.harvest(sources) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources);
