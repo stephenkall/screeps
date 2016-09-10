@@ -2,6 +2,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
+var roleSoldier = require('role.soldier');
 
 module.exports.loop = function ()
 {
@@ -10,6 +11,7 @@ module.exports.loop = function ()
     var maxBuilders = 1;
     var maxRepairers = 1;
     var bodyParts = [WORK,CARRY,MOVE];
+    var soldierBodyParts = [TOUGH,ATTACK,MOVE];
     var curLevel = Game.spawns.Spawn1.room.controller.level;
 
     switch(curLevel)
@@ -20,6 +22,7 @@ module.exports.loop = function ()
             maxBuilders = 1;
             maxRepairers = 1;
             bodyParts = [WORK,CARRY,MOVE];
+            soldierBodyParts = [TOUGH,ATTACK,MOVE];
             break;
             
         case 2:
@@ -27,7 +30,8 @@ module.exports.loop = function ()
             maxUpgraders = 3;
             maxBuilders = 2;
             maxRepairers = 5;            
-            bodyParts = [WORK,CARRY,CARRY,MOVE];
+            bodyParts = [ATTACK,WORK,CARRY,MOVE];
+            soldierBodyParts = [TOUGH,TOUGH,ATTACK,MOVE];
             break;
             
         case 3:
@@ -35,7 +39,8 @@ module.exports.loop = function ()
             maxUpgraders = 4;
             maxBuilders = 5;
             maxRepairers = 10;
-            bodyParts = [WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE];
+            bodyParts = [TOUGH,ATTACK,WORK,WORK,CARRY,MOVE];
+            soldierBodyParts = [TOUGH,TOUGH,ATTACK,RANGED_ATTACK,MOVE];
             break;
             
         default:
@@ -43,7 +48,8 @@ module.exports.loop = function ()
             maxUpgraders = 5;
             maxBuilders = 10;
             maxRepairers = 10;
-            bodyParts = [WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE];
+            bodyParts = [TOUGH,ATTACK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
+            soldierBodyParts = [TOUGH,TOUGH,TOUGH,ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE];
             break;
     }
 
@@ -52,6 +58,13 @@ module.exports.loop = function ()
     var hostiles = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS);
     
     if(hostiles.length > 0) {
+        Memory.attacking = true;
+        var newName = Game.spawns['Spawn1'].createCreep(soldierBodyParts, undefined, {role: 'soldier', lvl: curLevel});
+        if (newName.length > 2)
+        {
+            console.log('Spawning new soldier: ' + newName + ', level: ' + curLevel);
+        }
+        //Memory.hostiles = hostiles;
         var username = hostiles[0].owner.username;
         //Game.notify('User ${username} spotted in room ${roomName}');
         Game.notify('User "' + username + '" spotted in room');
@@ -60,6 +73,8 @@ module.exports.loop = function ()
     }
     else
     {
+        Memory.attacking = false;
+        //Memory.hostiles = null;
         //var tower = Game.getObjectById('88fa06c1f96d6e43c2eaef78');
         var towers = Game.spawns.Spawn1.room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
         if (towers != null)
@@ -89,6 +104,7 @@ module.exports.loop = function ()
     var upgraders  = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     var builders   = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     var repairers  = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+    var soldiers   = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
 
     if(harvesters.length < maxHarvesters) {
         if (harvesters == 0) // Fresh start (all creeps dead)
@@ -149,8 +165,14 @@ module.exports.loop = function ()
         var upgraders  = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
         var builders   = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
         var repairers  = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+        var soldiers   = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
         
         var creep = Game.creeps[name];
+        
+        if(creep.memory.role == 'soldier')
+        {
+            roleSoldier.run(creep);
+        }
         
         if(creep.memory.role == 'harvester')
         {
@@ -164,7 +186,9 @@ module.exports.loop = function ()
                 roleHarvester.run(creep);
             }
         }
-        if(creep.memory.role == 'upgrader') {
+        
+        if(creep.memory.role == 'upgrader')
+        {
 
             if (upgraders.length > maxUpgraders)
             {
@@ -176,7 +200,9 @@ module.exports.loop = function ()
                 roleUpgrader.run(creep);
             }
         }
-        if(creep.memory.role == 'builder') {
+        
+        if(creep.memory.role == 'builder')
+        {
 
             if (builders.length > maxBuilders)
             {
@@ -188,7 +214,9 @@ module.exports.loop = function ()
                 roleBuilder.run(creep);
             }
         }
-        if(creep.memory.role == 'repairer') {
+        
+        if(creep.memory.role == 'repairer')
+        {
 
             if (repairers.length > maxRepairers)
             {
@@ -200,6 +228,7 @@ module.exports.loop = function ()
                 roleRepairer.run(creep);
             }
         }
+        
         if(creep.memory.role == null) {
             console.log('Suiciding creep with no role: ' + creep.name);
             creep.suicide();
