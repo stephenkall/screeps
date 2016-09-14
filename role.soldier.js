@@ -8,12 +8,26 @@ var roleSoldier = {
             var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
             if (hostiles != null)
             {
-                if (creep.attack(hostiles[0]) == ERR_NOT_IN_RANGE)
+                if (_.filter(creep.body, function(bp){return bp.type == RANGED_ATTACK;}).length > 0)
                 {
-                    creep.moveTo(hostiles[0]);
-                    if (creep.saying != null)
+                    if (creep.rangedAttack(hostiles[0]) == ERR_NOT_IN_RANGE)
                     {
-                        creep.say('attacking ' + hostiles[0].name);
+                        creep.moveTo(hostiles[0]);
+                        if (creep.saying == null)
+                        {
+                            creep.say('ranged attacking ' + hostiles[0].name);
+                        }
+                    }
+                }
+                else
+                {
+                    if (creep.attack(hostiles[0]) == ERR_NOT_IN_RANGE)
+                    {
+                        creep.moveTo(hostiles[0]);
+                        if (creep.saying == null)
+                        {
+                            creep.say('attacking ' + hostiles[0].name);
+                        }
                     }
                 }
             }
