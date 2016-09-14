@@ -83,10 +83,13 @@ module.exports.loop = function ()
             {
                 if(tower)
                 {
-                    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, { filter: (structure) => structure.hits < structure.hitsMax });
-                    if(closestDamagedStructure)
+                    if (tower.energy > tower.energyCapacity * 0.9)
                     {
-                        tower.repair(closestDamagedStructure);
+                        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, { filter: (structure) => structure.hits < structure.hitsMax });
+                        if(closestDamagedStructure)
+                        {
+                            tower.repair(closestDamagedStructure);
+                        }
                     }
                 }
             });
