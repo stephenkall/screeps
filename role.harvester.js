@@ -31,13 +31,21 @@ var roleHarvester = {
                 
                 var targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                         filter: (structure) => {
-                            return (structure.structureType == STRUCTURE_EXTENSION ||
-                                    structure.structureType == STRUCTURE_SPAWN ||
-                                    structure.structureType == STRUCTURE_TOWER) &&
+                            return (structure.structureType == STRUCTURE_TOWER) &&
                                     structure.energy < structure.energyCapacity;
                         }
                 });
                 
+                if(targets == null)
+                {
+                    targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                            filter: (structure) => {
+                                return (structure.structureType == STRUCTURE_EXTENSION ||
+                                        structure.structureType == STRUCTURE_SPAWN) &&
+                                        structure.energy < structure.energyCapacity;
+                            }
+                    });
+                }
                 if(targets == null)
                 {
                     targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {

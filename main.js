@@ -26,9 +26,9 @@ module.exports.loop = function ()
             break;
             
         case 2:
-            maxHarvesters = 2;
-            maxUpgraders = 3;
-            maxBuilders = 2;
+            maxHarvesters = 3;
+            maxUpgraders = 4;
+            maxBuilders = 5;
             maxRepairers = 5;            
             bodyParts = [ATTACK,WORK,CARRY,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,MOVE];
@@ -38,16 +38,16 @@ module.exports.loop = function ()
             maxHarvesters = 5;
             maxUpgraders = 4;
             maxBuilders = 5;
-            maxRepairers = 10;
+            maxRepairers = 15;
             bodyParts = [TOUGH,ATTACK,WORK,WORK,CARRY,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,RANGED_ATTACK,MOVE];
             break;
             
         default:
-            maxHarvesters = 5;
+            maxHarvesters = 6;
             maxUpgraders = 5;
             maxBuilders = 10;
-            maxRepairers = 10;
+            maxRepairers = 20;
             bodyParts = [TOUGH,ATTACK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,TOUGH,ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE];
             break;
