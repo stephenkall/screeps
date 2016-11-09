@@ -48,10 +48,11 @@ var roleRepairer = {
                 });
                 var targets;
                 
-                if (lowTargets != null)
+                if (lowTargets != null && lowTargets.length > 0)
                 {
-                    if (creep.memory.target == null)
+                    if (creep.memory.target == null )
                     {
+                        
                         lowTargets.sort(compareStructures);
                         creep.memory.target = (lowTargets[0].id);
                     }

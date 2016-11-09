@@ -26,27 +26,45 @@ module.exports.loop = function ()
             break;
             
         case 2:
-            maxHarvesters = 3;
-            maxUpgraders = 4;
+            maxHarvesters = 2;
+            maxUpgraders = 3;
             maxBuilders = 5;
-            maxRepairers = 5;            
+            maxRepairers = 2;            
             bodyParts = [ATTACK,WORK,CARRY,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,MOVE];
             break;
             
         case 3:
             maxHarvesters = 3;
-            maxUpgraders = 4;
+            maxUpgraders = 5;
             maxBuilders = 5;
             maxRepairers = 10;
-            bodyParts = [ATTACK,WORK,CARRY,MOVE];
-            soldierBodyParts = [TOUGH,TOUGH,ATTACK,MOVE];
+            bodyParts = [ATTACK,WORK,CARRY,MOVE,MOVE];
+            soldierBodyParts = [TOUGH,TOUGH,ATTACK,ATTACK,MOVE];
+            break;
+            
+        case 4:
+            maxHarvesters = 4;
+            maxUpgraders = 5;
+            maxBuilders = 3;
+            maxRepairers = 10;
+            bodyParts = [ATTACK,WORK,CARRY,MOVE,MOVE];
+            soldierBodyParts = [TOUGH,TOUGH,ATTACK,ATTACK,MOVE];
+            break;
+            
+        case 5:
+            maxHarvesters = 5;
+            maxUpgraders = 5;
+            maxBuilders = 4;
+            maxRepairers = 15;
+            bodyParts = [TOUGH,ATTACK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
+            soldierBodyParts = [TOUGH,TOUGH,ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE];
             break;
             
         default:
             maxHarvesters = 6;
-            maxUpgraders = 5;
-            maxBuilders = 10;
+            maxUpgraders = 6;
+            maxBuilders = 5;
             maxRepairers = 20;
             bodyParts = [TOUGH,ATTACK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,TOUGH,ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE];
@@ -108,7 +126,8 @@ module.exports.loop = function ()
     var builders   = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     var repairers  = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
     var soldiers   = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
-
+    var buildingTargets = Game.spawns['Spawn1'].pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+    
     if(harvesters.length < maxHarvesters) {
         if (harvesters == 0) // Fresh start (all creeps dead)
         {
@@ -136,19 +155,15 @@ module.exports.loop = function ()
         }
     }
     else
-    if(builders.length < maxBuilders)
+    if(builders.length < maxBuilders && buildingTargets != null)
     {
-        var buildingTargets = Game.spawns['Spawn1'].pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-        if (buildingTargets != null)
+        var newName = Game.spawns['Spawn1'].createCreep(bodyParts, undefined, {role: 'builder', lvl: curLevel});
+        if (newName.length > 2)
         {
-            var newName = Game.spawns['Spawn1'].createCreep(bodyParts, undefined, {role: 'builder', lvl: curLevel});
-            if (newName.length > 2)
-            {
-                console.log('Spawning new builder: ' + newName + ', level: ' + curLevel);
-            }
+            console.log('Spawning new builder: ' + newName + ', level: ' + curLevel);
         }
     }
-    else
+    else    
     if(repairers.length < maxRepairers) {
         var newName = Game.spawns['Spawn1'].createCreep(bodyParts, undefined, {role: 'repairer', lvl: curLevel});
         if (newName.length > 2)
