@@ -2,6 +2,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
+var roleWallRepairer = require('role.wallrepairer');
 var roleSoldier = require('role.soldier');
 
 module.exports.loop = function ()
@@ -10,6 +11,7 @@ module.exports.loop = function ()
     var maxUpgraders = 1;
     var maxBuilders = 1;
     var maxRepairers = 1;
+    var maxWallRepairers = 1;
     var bodyParts = [WORK,CARRY,MOVE];
     var soldierBodyParts = [TOUGH,ATTACK,MOVE];
     var curLevel = Game.spawns.Spawn1.room.controller.level;
@@ -21,6 +23,7 @@ module.exports.loop = function ()
             maxUpgraders = 2;
             maxBuilders = 1;
             maxRepairers = 1;
+            maxWallRepairers = 1;
             bodyParts = [WORK,CARRY,MOVE];
             soldierBodyParts = [TOUGH,ATTACK,MOVE];
             break;
@@ -29,7 +32,8 @@ module.exports.loop = function ()
             maxHarvesters = 2;
             maxUpgraders = 3;
             maxBuilders = 5;
-            maxRepairers = 2;            
+            maxRepairers = 1;
+            maxWallRepairers = 1;
             bodyParts = [ATTACK,WORK,CARRY,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,MOVE];
             break;
@@ -38,7 +42,8 @@ module.exports.loop = function ()
             maxHarvesters = 3;
             maxUpgraders = 5;
             maxBuilders = 5;
-            maxRepairers = 10;
+            maxRepairers = 2;
+            maxWallRepairers = 6;
             bodyParts = [ATTACK,WORK,CARRY,MOVE,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,ATTACK,MOVE];
             break;
@@ -47,7 +52,8 @@ module.exports.loop = function ()
             maxHarvesters = 4;
             maxUpgraders = 5;
             maxBuilders = 3;
-            maxRepairers = 10;
+            maxRepairers = 3;
+            maxWallRepairers = 6;
             bodyParts = [ATTACK,WORK,CARRY,MOVE,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,ATTACK,MOVE];
             break;
@@ -56,7 +62,8 @@ module.exports.loop = function ()
             maxHarvesters = 5;
             maxUpgraders = 5;
             maxBuilders = 4;
-            maxRepairers = 15;
+            maxRepairers = 7;
+            maxWallRepairers = 7;
             bodyParts = [TOUGH,ATTACK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE];
             break;
@@ -65,7 +72,8 @@ module.exports.loop = function ()
             maxHarvesters = 6;
             maxUpgraders = 6;
             maxBuilders = 5;
-            maxRepairers = 20;
+            maxRepairers = 7;
+            maxWallRepairers = 10;
             bodyParts = [TOUGH,ATTACK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             soldierBodyParts = [TOUGH,TOUGH,TOUGH,ATTACK,RANGED_ATTACK,RANGED_ATTACK,MOVE];
             break;
@@ -121,11 +129,12 @@ module.exports.loop = function ()
         }
     }
 
-    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-    var upgraders  = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    var builders   = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    var repairers  = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
-    var soldiers   = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
+    var harvesters      = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+    var upgraders       = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+    var builders        = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+    var repairers       = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+    var wallrepairers   = _.filter(Game.creeps, (creep) => creep.memory.role == 'wallrepairer');
+    var soldiers        = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
     var buildingTargets = Game.spawns['Spawn1'].pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
     
     if(harvesters.length < maxHarvesters) {
@@ -171,7 +180,15 @@ module.exports.loop = function ()
             console.log('Spawning new repairer: ' + newName + ', level: ' + curLevel);
         }
     }
-
+    else    
+    if(wallrepairers.length < maxWallRepairers) {
+        var newName = Game.spawns['Spawn1'].createCreep(bodyParts, undefined, {role: 'wallrepairer', lvl: curLevel});
+        if (newName.length > 2)
+        {
+            console.log('Spawning new wall repairer: ' + newName + ', level: ' + curLevel);
+        }
+    }
+    
     //console.log('Harvesters: ' + harvesters.length);
     //console.log('Builders: '   + builders.length);
     //console.log('Upgraders: '  + upgraders.length);
@@ -179,11 +196,12 @@ module.exports.loop = function ()
     
     for(var name in Game.creeps) {
 
-        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-        var upgraders  = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-        var builders   = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-        var repairers  = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
-        var soldiers   = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
+        var harvesters     = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+        var upgraders      = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+        var builders       = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
+        var repairers      = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+        var wallrepairers  = _.filter(Game.creeps, (creep) => creep.memory.role == 'wallrepairer');
+        var soldiers       = _.filter(Game.creeps, (creep) => creep.memory.role == 'soldier');
         
         var creep = Game.creeps[name];
         
@@ -244,6 +262,20 @@ module.exports.loop = function ()
             else
             {
                 roleRepairer.run(creep);
+            }
+        }
+        
+        if(creep.memory.role == 'wallrepairer')
+        {
+
+            if (wallrepairers.length > maxWallRepairers)
+            {
+                console.log('Suiciding wall repairer: ' + creep.name + ', level: ' + creep.memory.lvl + '. Amount: ' + wallrepairers.length + '/' + maxWallRepairers);
+                creep.suicide();
+            }
+            else
+            {
+                roleWallRepairer.run(creep);
             }
         }
         

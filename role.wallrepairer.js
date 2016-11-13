@@ -1,4 +1,4 @@
-var roleRepairer = {
+var roleWallRepairer = {
 
     /** @param {Creep} creep **/
     run: function(creep){
@@ -35,12 +35,7 @@ var roleRepairer = {
     	    if(creep.memory.repairing) {
     	        var lowTargets = creep.room.find(FIND_STRUCTURES, {
                         filter: (structure) => {
-                            return (structure.structureType == STRUCTURE_EXTENSION ||
-                                    structure.structureType == STRUCTURE_SPAWN ||
-                                    structure.structureType == STRUCTURE_TOWER ||
-                                    structure.structureType == STRUCTURE_STORAGE ||
-                                    structure.structureType == STRUCTURE_CONTAINER ||
-                                    structure.structureType == STRUCTURE_ROAD) && 
+                            return (structure.structureType == STRUCTURE_WALL) && 
                                    (structure.hits < structure.hitsMax * 0.9);
                         }
                 });
@@ -128,4 +123,4 @@ function compareStructures(a,b)
     return a.hits/a.hitsMax - b.hits/b.hitsMax;
 }
     
-module.exports = roleRepairer;
+module.exports = roleWallRepairer;
